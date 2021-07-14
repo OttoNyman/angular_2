@@ -3,21 +3,34 @@
 
   <div class="card">
     <div class="form-control">
-      <input type="text" placeholder="Название">
+      <input type="text" placeholder="Название" [(ngModel)]="todoTitle">
     </div>
-    <button class="btn">Добавить</button>
-    <button class="btn">Загрузить</button>
+    <button class="btn" (click)="addTodo()">Добавить</button>
+    <button class="btn" (click)="fetchTodos()">Загрузить</button>
   </div>
 
   <hr>
 
-  <div class="card" *ngFor="let todo of mytodos">
-    <p>
-      <span [class.completed]="todo.completed">{{todo.title | titlecase}}</span>
-      <span>
-        <button class="btn btn-danger">Удалить</button>
-        <button class="btn" [disabled]="todo.completed" >Завершить</button>
-      </span>
-    </p>
-  </div>
+  <p class="error" *ngIf="error; else todoBlock">{{error}}</p>
+  <ng-template #todoBlock>
+    <div *ngIf="!loading; else loadingDiv">
+      <div *ngIf="mytodos.length; else noItemDiv">
+        <div class="card" *ngFor="let todo of mytodos">
+          <p>
+            <span [class.completed]="todo.completed">{{todo.title | titlecase}}</span>
+            <span>
+              <button class="btn btn-danger" (click)="delItem(todo.id)">Удалить</button>
+              <button class="btn" [disabled]="todo.completed" (click)="completeTodo(todo.id)">Завершить</button>
+            </span>
+          </p>
+        </div>
+      </div>
+      <ng-template #noItemDiv>
+        <p> Нет заданий</p>
+      </ng-template>
+    </div>
+    <ng-template #loadingDiv>
+      <p>Загрузка...</p>
+    </ng-template>
+  </ng-template>
 </div>
