@@ -1,56 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core'
-
-import { delay } from 'rxjs/operators'
-import { Todo, TodosService } from './todos.service';
+import { Component } from '@angular/core'
+import { AppCounterService } from './services/app-counter.service';
+import { LocalCounterService } from './services/local-counter.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  providers: [LocalCounterService]
 })
-export class AppComponent implements OnInit {
-  mytodos: Todo[] = [];
-  todoTitle = ''
-  loading: boolean = false
-  error = ''
-
-  constructor(private todosService: TodosService) {
-  }
-
-  ngOnInit() {
-    this.fetchTodos()
-  }
-
-  addTodo() {
-    this.todosService.addTodo({
-      title: this.todoTitle,
-      completed: false
-    }).subscribe(respTodo => {
-      this.mytodos.push(respTodo)
-      this.todoTitle = ''
-    })
-  }
-
-  fetchTodos() {
-    this.loading = true
-    this.todosService.fetchTodos()
-      .subscribe(gettedtodos => {
-        this.mytodos = gettedtodos
-        this.loading = false
-      }, error => { this.error = error.message })
-  }
-
-  delItem(id: any) {
-    this.todosService.removeTodo(id)
-      .subscribe(() => this.mytodos = this.mytodos.filter(t => t.id !== id)
-      )
-  }
-
-  completeTodo(id: number) {
-    this.todosService.finishTodo(id).subscribe(todo => {
-      this.mytodos.find(t => t.id === todo.id).completed = true
-    })
-  }
-
+export class AppComponent {
+  constructor(
+    private appCounterService: AppCounterService,
+    private localCounterService: LocalCounterService
+  ) { }
 }
+
